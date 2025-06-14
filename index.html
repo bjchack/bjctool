@@ -46,6 +46,7 @@
   <div id="loader">
     <div class="spinner"></div>
     <p>Loading ZLT Tool...</p>
+    <small id="versionInfo" style="margin-top: 10px; color: #aaa;"></small>
   </div>
 
   <iframe id="toolFrame" src="https://bjchack.github.io/zlts10g/"></iframe>
@@ -65,6 +66,8 @@
       .then(res => res.ok ? res.json() : Promise.reject("Fetch error"))
       .then(data => {
         const current = localStorage.getItem("zlt_version");
+        document.getElementById("versionInfo").textContent = "Version: " + data.version;
+
         if (current !== data.version) {
           alert("📢 May bagong update! Reloading...");
           localStorage.setItem("zlt_version", data.version);
@@ -73,6 +76,7 @@
       })
       .catch(err => {
         console.warn("❌ Version check failed or offline mode", err);
+        document.getElementById("versionInfo").textContent = "Offline Mode";
       });
   </script>
 
