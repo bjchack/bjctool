@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZLT Tool Loader</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    #loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100%;
+      text-align: center;
+    }
+    .spinner {
+      border: 5px solid #444;
+      border-top: 5px solid #00ff00;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    iframe {
+      display: none;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader">
+    <div class="spinner"></div>
+    <p>Loading ZLT Tool...</p>
+  </div>
+
+  <iframe id="toolFrame" src="https://bjchack.github.io/zlts10g/"></iframe>
+
+  <script>
+    const iframe = document.getElementById("toolFrame");
+    const loader = document.getElementById("loader");
+
+    // Show iframe when fully loaded
+    iframe.onload = () => {
+      loader.style.display = "none";
+      iframe.style.display = "block";
+    };
+
+    // Auto-update version check
+    fetch("https://bjchack.github.io/zlts10g/version.json?t=" + Date.now())
+      .then(res => res.ok ? res.json() : Promise.reject("Fetch error"))
+      .then(data => {
+        const current = localStorage.getItem("zlt_version");
+        if (current !== data.version) {
+          alert("📢 May bagong update! Reloading...");
+          localStorage.setItem("zlt_version", data.version);
+          location.reload();
+        }
+      })
+      .catch(err => {
+        console.warn("❌ Version check failed or offline mode", err);
+      });
+  </script>
+
+</body>
+</html>
